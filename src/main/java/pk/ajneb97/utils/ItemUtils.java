@@ -260,10 +260,7 @@ public class ItemUtils {
 					potionType = meta.getBasePotionType().name();
 				}
 			}else{
-				PotionData basePotionData = meta.getBasePotionData();
-				extended = basePotionData.isExtended();
-				upgraded = basePotionData.isUpgraded();
-				potionType = basePotionData.getType().name();
+				potionType = Objects.requireNonNull(meta.getBasePotionType()).name();
 			}
 		}
 		
@@ -293,9 +290,9 @@ public class ItemUtils {
 			for(int i=0;i<potionEffects.size();i++) {
 				String[] sep = potionEffects.get(i).split(";");
 				String type = sep[0];
-				int amplifier = Integer.valueOf(sep[1]);
-				int duration = Integer.valueOf(sep[2]);
-				meta.addCustomEffect(new PotionEffect(PotionEffectType.getByName(type),duration,amplifier), false);
+				int amplifier = Integer.parseInt(sep[1]);
+				int duration = Integer.parseInt(sep[2]);
+				meta.addCustomEffect(new PotionEffect(Objects.requireNonNull(PotionEffectType.getByName(type)),duration,amplifier), false);
 			}
 		}
 
@@ -310,12 +307,14 @@ public class ItemUtils {
 					meta.setBasePotionType(PotionType.valueOf(potionData.getPotionType()));
 				}
 			}else{
-				PotionData basePotionData = new PotionData(
+                //noinspection removal
+                PotionData basePotionData = new PotionData(
 						PotionType.valueOf(potionData.getPotionType()),
 						potionData.isExtended(),
 						potionData.isUpgraded());
 
-				meta.setBasePotionData(basePotionData);
+                //noinspection deprecation
+                meta.setBasePotionData(basePotionData);
 			}
 		}
 		

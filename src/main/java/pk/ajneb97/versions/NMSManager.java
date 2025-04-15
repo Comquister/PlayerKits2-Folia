@@ -106,6 +106,7 @@ public class NMSManager {
                     case v1_20_R2:
                     case v1_20_R3: methodName = "v"; break;
                 }
+                assert methodName != null;
                 version.addMethod("getTag",version.getClassRef("ItemStackNMS").getMethod(methodName));
 
                 version.addMethod("setTag",version.getClassRef("ItemStackNMS").getMethod("c",version.getClassRef("NBTTagCompound")));
@@ -135,12 +136,13 @@ public class NMSManager {
                     case v1_20_R2:
                     case v1_20_R3: methodName = "e"; break;
                 }
+                assert methodName != null;
                 version.addMethod("getKeys",version.getClassRef("NBTTagCompound").getMethod(methodName));
                 version.addMethod("hasKeyOfType",version.getClassRef("NBTTagCompound").getMethod("b",String.class,int.class));
                 version.addMethod("parse",version.getClassRef("MojangsonParser").getMethod("a",String.class));
             }
         } catch (ClassNotFoundException | NoSuchMethodException e) {
-            e.printStackTrace();
+            e.fillInStackTrace();
         }
     }
 
@@ -161,7 +163,7 @@ public class NMSManager {
             version.getMethodRef("setTag").invoke(newItem,compound);
             return (ItemStack)version.getMethodRef("asBukkitCopy").invoke(null,newItem);
         } catch (IllegalAccessException | InvocationTargetException e) {
-            e.printStackTrace();
+            e.fillInStackTrace();
         }
         return item;
     }
@@ -170,6 +172,7 @@ public class NMSManager {
         if(serverVersionGreaterEqualThan(ServerVersion.v1_20_R4)){
             ItemMeta meta = item.getItemMeta();
             NamespacedKey namespacedKey = new NamespacedKey(plugin, key);
+            assert meta != null;
             PersistentDataContainer p = meta.getPersistentDataContainer();
             if(p.has(namespacedKey)){
                 return p.get(namespacedKey,PersistentDataType.STRING);
@@ -184,7 +187,7 @@ public class NMSManager {
                 return (String)version.getMethodRef("getString").invoke(compound,key);
             }
         } catch (IllegalAccessException | InvocationTargetException e) {
-            e.printStackTrace();
+            e.fillInStackTrace();
         }
         return null;
     }
@@ -209,7 +212,7 @@ public class NMSManager {
             version.getMethodRef("setTag").invoke(newItem,compound);
             return (ItemStack)version.getMethodRef("asBukkitCopy").invoke(null,newItem);
         } catch (IllegalAccessException | InvocationTargetException e) {
-            e.printStackTrace();
+            e.fillInStackTrace();
         }
         return item;
     }
@@ -261,7 +264,7 @@ public class NMSManager {
                 }
             }
         } catch (IllegalAccessException | InvocationTargetException e) {
-            e.printStackTrace();
+            e.fillInStackTrace();
         }
         return nbtList;
     }
@@ -313,7 +316,7 @@ public class NMSManager {
             version.getMethodRef("setTag").invoke(newItem,compound);
             return (ItemStack)version.getMethodRef("asBukkitCopy").invoke(null,newItem);
         }catch(IllegalAccessException | IllegalArgumentException | InvocationTargetException | SecurityException e) {
-            e.printStackTrace();
+            e.fillInStackTrace();
         }
         return null;
     }
@@ -321,8 +324,8 @@ public class NMSManager {
     public List<String> getAttributes(ItemStack item) {
         try {
             Object newItem = version.getMethodRef("asNMSCopy").invoke(null,item); //ItemStackNMS
-            if((boolean)version.getMethodRef("hasTag").invoke(newItem,null)) {
-                Object compound = version.getMethodRef("getTag").invoke(newItem, null);
+            if((boolean)version.getMethodRef("hasTag").invoke(newItem, (Object) null)) {
+                Object compound = version.getMethodRef("getTag").invoke(newItem, (Object) null);
                 if((boolean)version.getMethodRef("hasKey").invoke(compound,"AttributeModifiers")){
                     List<String> attributeList = new ArrayList<>();
                     Object attributes = version.getMethodRef("getList").invoke(compound,"AttributeModifiers",10); //NBTTagList
@@ -346,7 +349,7 @@ public class NMSManager {
                 }
             }
         } catch (IllegalAccessException | InvocationTargetException e) {
-            e.printStackTrace();
+            e.fillInStackTrace();
         }
         return null;
     }
@@ -362,10 +365,10 @@ public class NMSManager {
                 String[] data = attributeList.get(i).split(";");
                 String attributeName = data[0];
                 String name = data[1];
-                double amount = Double.valueOf(data[2]);
-                int operation = Integer.valueOf(data[3]);
-                int uuidLeast = Integer.valueOf(data[4]);
-                int uuidMost = Integer.valueOf(data[5]);
+                double amount = Double.parseDouble(data[2]);
+                int operation = Integer.parseInt(data[3]);
+                int uuidLeast = Integer.parseInt(data[4]);
+                int uuidMost = Integer.parseInt(data[5]);
 
                 version.getMethodRef("setString").invoke(attributeCompound,"AttributeName",attributeName);
                 version.getMethodRef("setString").invoke(attributeCompound,"Name",name);
@@ -385,7 +388,7 @@ public class NMSManager {
 
             return (ItemStack)version.getMethodRef("asBukkitCopy").invoke(null,newItem);
         } catch (IllegalAccessException | InvocationTargetException | InstantiationException e) {
-            e.printStackTrace();
+            e.fillInStackTrace();
         }
 
         return null;
@@ -393,12 +396,11 @@ public class NMSManager {
 
     private Object getNBTCompound(Object newItem){
         try {
-            boolean hasTag = (boolean)version.getMethodRef("hasTag").invoke(newItem,null);
-            Object compound = hasTag ? version.getMethodRef("getTag").invoke(newItem,null) :
-                    version.getClassRef("NBTTagCompound").newInstance();
-            return compound;
+            boolean hasTag = (boolean)version.getMethodRef("hasTag").invoke(newItem, (Object) null);
+            Object o = hasTag ? version.getMethodRef("getTag").invoke(newItem, (Object) null) : version.getClassRef("NBTTagCompound").newInstance();
+            return o;
         } catch (IllegalAccessException | InvocationTargetException | InstantiationException e) {
-            e.printStackTrace();
+            e.fillInStackTrace();
         }
         return null;
     }
