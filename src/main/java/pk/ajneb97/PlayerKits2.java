@@ -20,9 +20,11 @@ import pk.ajneb97.tasks.InventoryUpdateTaskManager;
 import pk.ajneb97.tasks.PlayerDataSaveTask;
 import pk.ajneb97.versions.NMSManager;
 import pk.ajneb97.utils.ServerVersion;
+import com.tcoded.folialib.FoliaLib;
 
 public class PlayerKits2 extends JavaPlugin {
 
+    private FoliaLib foliaLib;
     public String version = getDescription().getVersion();
     public static String prefix;
     public static ServerVersion serverVersion;
@@ -50,6 +52,7 @@ public class PlayerKits2 extends JavaPlugin {
         registerCommands();
         registerEvents();
 
+        this.foliaLib = new FoliaLib(this);
         this.kitItemManager = new KitItemManager(this);
         this.inventoryManager = new InventoryManager(this);
         this.inventoryEditManager = new InventoryEditManager(this);
@@ -92,6 +95,10 @@ public class PlayerKits2 extends JavaPlugin {
     public void onDisable(){
         this.configsManager.getPlayersConfigManager().saveConfigs();
         Bukkit.getConsoleSender().sendMessage(MessagesManager.getColoredMessage(prefix+"&eHas been disabled! &fVersion: "+version));
+    }
+
+    public FoliaLib getFoliaLib() {
+        return this.foliaLib;
     }
 
     public void registerCommands(){
