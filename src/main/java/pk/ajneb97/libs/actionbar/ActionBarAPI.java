@@ -98,6 +98,7 @@ public class ActionBarAPI
               }
           }.runTaskLater(plugin, (long) duration);
       }
+
   }
 
 }

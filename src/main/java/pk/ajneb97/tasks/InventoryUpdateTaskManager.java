@@ -1,5 +1,6 @@
 package pk.ajneb97.tasks;
 
+import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
@@ -9,23 +10,24 @@ import pk.ajneb97.managers.*;
 import pk.ajneb97.model.inventory.InventoryPlayer;
 import pk.ajneb97.utils.InventoryUtils;
 import pk.ajneb97.utils.ItemUtils;
+import com.tcoded.folialib.FoliaLib;
 
 import java.util.ArrayList;
 
 public class InventoryUpdateTaskManager {
 
     private PlayerKits2 plugin;
+    private FoliaLib foliaLib;
+
     public InventoryUpdateTaskManager(PlayerKits2 plugin){
         this.plugin = plugin;
+        this.foliaLib = new FoliaLib(plugin); // Aqui está a correção
     }
 
-    public void start(){
-        new BukkitRunnable(){
-            @Override
-            public void run() {
-                execute();
-            }
-        }.runTaskTimer(plugin,0L,20L);
+    public void start() {
+        foliaLib.getScheduler().runTimer(() -> {
+            execute();
+        }, 1L, 20L);
     }
 
     public void execute(){
